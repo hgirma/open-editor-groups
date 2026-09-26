@@ -2,7 +2,7 @@
 
 ## 0.2.2
 
-- The view's title follows the grouping mode: "Open Editor Group: Project", "Folder", "Workspace Folder", or "Open Editor Group" for the flat list. The Activity Bar container is now titled "Open Editor Group".
+- The view's title follows the grouping mode: "Open Editors Group: Project", "Folder", "Workspace Folder", or "Open Editors Group" for the flat list. The Activity Bar container is now titled "Open Editors Group".
 - README: disclaimer that the extension was built with Claude Code.
 
 ## 0.2.1
