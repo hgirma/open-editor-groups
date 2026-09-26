@@ -1,6 +1,6 @@
 # Where the view can live
 
-The view starts as its own **Open Editors** icon in the Activity Bar. Like any view it can be dragged elsewhere:
+The view starts as its own **Open Editor Groups** icon in the Activity Bar. Like any view it can be dragged elsewhere:
 
 - **Into the Explorer**: drag the icon onto the Explorer icon in the Activity Bar, then drag the view's header above *Folders*. Everything is in one side bar.
 - **Into the Secondary Side Bar**: drag the icon to the right edge of the window (or run **View: Move View...** and pick *Secondary Side Bar*). The list stays open next to the editor while the Explorer keeps the primary side bar.

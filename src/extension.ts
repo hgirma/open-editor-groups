@@ -94,15 +94,15 @@ export function deactivate(): void {
 }
 
 /**
- * View title per grouping mode. The container is titled "Open Editors"; VS Code renders a
- * single view in a container as "Container: View" unless both titles are identical, so the
- * header reads "Open Editors: by Project" and, for the flat list, just "Open Editors".
+ * View title per grouping mode. The container is titled "Open Editor Groups"; VS Code renders
+ * a single view in a container as "Container: View" unless both titles are identical, so the
+ * header reads "Open Editor Groups: By Project" and, for the flat list, just "Open Editor Groups".
  */
 const VIEW_TITLES: Record<GroupBy, string> = {
-  project: 'by Project',
-  folder: 'by Folder',
-  workspaceFolder: 'by Workspace Folder',
-  none: 'Open Editors',
+  project: 'By Project',
+  folder: 'By Folder',
+  workspaceFolder: 'By Workspace Folder',
+  none: 'Open Editor Groups',
 };
 
 function updateBadge(treeView: vscode.TreeView<unknown>, model: Model): void {
@@ -123,7 +123,7 @@ function showWelcomeOnce(context: vscode.ExtensionContext): void {
   const hideBuiltIn = 'Hide Built-in Open Editors';
   void vscode.window
     .showInformationMessage(
-      'Open Editor Groups lists your open editors grouped by project in the "Open Editors" view in the Activity Bar.',
+      'Open Editor Groups lists your open editors grouped by project in its own view in the Activity Bar.',
       getStarted,
       showView,
       hideBuiltIn,
