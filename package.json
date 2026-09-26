@@ -5,6 +5,14 @@
   "version": "0.2.2",
   "publisher": "hgirma",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hgirma/open-editor-groups.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hgirma/open-editor-groups/issues"
+  },
+  "homepage": "https://github.com/hgirma/open-editor-groups#readme",
   "engines": {
     "vscode": "^1.85.0"
   },
