@@ -25,9 +25,13 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
+  "icon": "images/icon.png",
   "capabilities": {
     "untrustedWorkspaces": {
-      "supported": true
+      "supported": true,
+      "restrictedConfigurations": [
+        "openEditorGroups.colorRules"
+      ]
     },
     "virtualWorkspaces": true
   },
@@ -559,6 +563,7 @@
     "vscode:prepublish": "npm run package",
     "compile": "npm run check-types && node esbuild.js",
     "watch": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --preserveWatchOutput",
     "package": "npm run check-types && node esbuild.js --production",
     "check-types": "tsc --noEmit",
     "build:icons": "python scripts/build-icon-font.py",
@@ -567,7 +572,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
-    "@types/vscode": "^1.85.0",
+    "@types/vscode": "1.85.0",
     "@vscode/vsce": "^3.2.0",
     "esbuild": "^0.25.0",
     "typescript": "^5.6.0"

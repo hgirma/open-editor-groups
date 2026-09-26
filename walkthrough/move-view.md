@@ -20,7 +20,7 @@ Visual Studio's *Tab layout: Left / Right* corresponds to where the side bar is:
 
 [Toggle the Primary Side Bar position](command:workbench.action.toggleSidebarPosition)
 
-`workbench.activityBar.location` (`default`, `top`, `bottom`, `hidden`) moves the Activity Bar itself; with `top` the view icons sit above the side bar content.
+`workbench.activityBar.location` (`default`, `top`, `hidden`, and `bottom` in newer VS Code versions) moves the Activity Bar itself; with `top` the view icons sit above the side bar content.
 
 ## Keyboard shortcut
 

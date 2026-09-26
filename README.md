@@ -89,7 +89,7 @@ The second binding closes whatever is selected in the view.
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `openEditorGroups.projectFilePatterns` | `.csproj`, `.fsproj`, `.vbproj`, `.vcxproj`, `.esproj`, `.sqlproj`, `.wapproj`, `.shproj`, `.pyproj`, `.njsproj`, `package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `pom.xml`, `build.gradle(.kts)` | File name patterns that mark a project root. Earlier patterns win inside one folder. |
+| `openEditorGroups.projectFilePatterns` | `*.csproj`, `*.fsproj`, `*.vbproj`, `*.vcxproj`, `*.esproj`, `*.sqlproj`, `*.wapproj`, `*.shproj`, `*.pyproj`, `*.njsproj`, `package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `pom.xml`, `build.gradle`, `build.gradle.kts` | File name patterns (`*` and `?` wildcards) that mark a project root. Earlier patterns win inside one folder. |
 | `openEditorGroups.groupBy` | `project` | `project`, `folder`, `workspaceFolder` or `none`. Colors always come from the file's project (or color rules). |
 | `openEditorGroups.solutionNodes` | `auto` | Add a node per `.sln`/`.slnx`: `auto` (two or more solutions), `always`, `never`. Projects in no solution go under *Other projects*. |
 | `openEditorGroups.groupByEditorGroup` | `true` | Add a node per editor group when the editor area is split. When off, editors outside the first group that holds a file are marked "editor group N". |
@@ -147,7 +147,7 @@ Press <kbd>F5</kbd> in VS Code to launch an Extension Development Host with the 
 
 1. Set `publisher` in `package.json` to your Marketplace publisher ID.
 2. Set `repository.url` in `package.json` to the public Git repository. `vsce` uses it to turn the relative image links in this README into absolute URLs; without it the screenshots would be broken on the Marketplace page.
-3. Run `npm run vsix` and `npx vsce publish`.
+3. Run `npm run vsix` and `npx vsce publish`. The Marketplace listing uses `images/icon.png` as the extension icon.
 
 ## Known limitations
 

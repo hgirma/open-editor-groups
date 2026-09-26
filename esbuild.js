@@ -19,6 +19,12 @@ const problemMatcherPlugin = {
           console.error(`    ${location.file}:${location.line}:${location.column}:`);
         }
       }
+      for (const { text, location } of result.warnings) {
+        console.warn(`▲ [WARNING] ${text}`);
+        if (location) {
+          console.warn(`    ${location.file}:${location.line}:${location.column}:`);
+        }
+      }
       console.log('[watch] build finished');
     });
   },
