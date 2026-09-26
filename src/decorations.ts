@@ -11,7 +11,7 @@ export class ProjectColorDecorations implements vscode.FileDecorationProvider, v
   private readonly _onDidChange = new vscode.EventEmitter<vscode.Uri | vscode.Uri[] | undefined>();
   readonly onDidChangeFileDecorations = this._onDidChange.event;
 
-  private model: Model = emptyModel();
+  private model: Model = emptyModel(getConfig());
   private projectNameByUri = new Map<string, string>();
 
   setModel(model: Model): void {
@@ -19,8 +19,8 @@ export class ProjectColorDecorations implements vscode.FileDecorationProvider, v
     this.model = model;
     this.projectNameByUri = new Map();
     for (const node of model.byTab.values()) {
-      if (node.uri) {
-        this.projectNameByUri.set(node.uri.toString(), node.parent.label);
+      if (node.uri && node.projectLabel) {
+        this.projectNameByUri.set(node.uri.toString(), node.projectLabel);
       }
     }
     if (changed.size > 0) {

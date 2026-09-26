@@ -141,6 +141,17 @@ export function parentOf(uri: vscode.Uri): vscode.Uri {
   return vscode.Uri.joinPath(uri, '..');
 }
 
+/** Schemes whose path mirrors a file on disk (e.g. `git:` for "Open File (HEAD)"). */
+const FILE_MIRROR_SCHEMES = new Set(['git', 'gitlens']);
+
+/** The on-disk URI to use for project lookup and path display. */
+export function lookupUri(uri: vscode.Uri): vscode.Uri {
+  if (FILE_MIRROR_SCHEMES.has(uri.scheme)) {
+    return uri.with({ scheme: 'file', query: '', fragment: '' });
+  }
+  return uri;
+}
+
 export function baseName(uri: vscode.Uri): string {
   const path = uri.path.replace(/\/+$/, '');
   const idx = path.lastIndexOf('/');

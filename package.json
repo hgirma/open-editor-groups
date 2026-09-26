@@ -2,7 +2,7 @@
   "name": "open-editor-groups",
   "displayName": "Open Editor Groups",
   "description": "Groups open editors by project (like the Visual Studio 2026 Tabs window) and colorizes them per project.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "hgirma",
   "license": "MIT",
   "engines": {
@@ -54,134 +54,145 @@
     "viewsWelcome": [
       {
         "view": "openEditorGroups.view",
-        "contents": "No editors are open."
+        "contents": "No editors are open.\n[Getting Started](command:openEditorGroups.openWalkthrough)"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "openEditorGroups.gettingStarted",
+        "title": "Open editors grouped by project",
+        "description": "Set up the Open Editors by Project view and tune VS Code so each open file is listed once, under its project.",
+        "featuredFor": [
+          "**/*.sln",
+          "**/*.slnx",
+          "**/*.csproj"
+        ],
+        "steps": [
+          {
+            "id": "openEditorGroups.step.showView",
+            "title": "Open the view",
+            "description": "The extension adds an **Open Editors by Project** icon to the Activity Bar. Every open editor is listed under the project it belongs to (`.csproj`, `package.json`, `Cargo.toml`, ... see the setting `openEditorGroups.projectFilePatterns`), with a colored bar per project.\n[Show the view](command:openEditorGroups.view.focus)",
+            "media": {
+              "image": "images/open-editors-by-project.png",
+              "altText": "The Open Editors by Project view with files grouped under five projects, each with its own color"
+            },
+            "completionEvents": [
+              "onView:openEditorGroups.view"
+            ]
+          },
+          {
+            "id": "openEditorGroups.step.hideBuiltIn",
+            "title": "Hide the built-in Open Editors section",
+            "description": "The Explorer's own **Open Editors** section keeps listing the same files. Hide it so every open file is listed once. This writes `explorer.openEditors.visible: 0` to your user settings; the command **Open Editor Groups: Show Built-in Open Editors View** restores it.\n[Hide built-in Open Editors](command:openEditorGroups.hideBuiltInOpenEditors)",
+            "media": {
+              "markdown": "walkthrough/hide-built-in.md"
+            },
+            "completionEvents": [
+              "onSettingChanged:explorer.openEditors.visible",
+              "onCommand:openEditorGroups.hideBuiltInOpenEditors"
+            ]
+          },
+          {
+            "id": "openEditorGroups.step.singleTab",
+            "title": "Show only the active editor's tab",
+            "description": "With every open file listed in the view, the tab bar can shrink to the active editor only, like the Visual Studio Tabs window. This writes `workbench.editor.showTabs` to your user settings.\n[Show only the active tab](command:openEditorGroups.showSingleEditorTab)\n[Hide tabs completely](command:openEditorGroups.hideEditorTabs)\n[Show all tabs again](command:openEditorGroups.restoreEditorTabs)",
+            "media": {
+              "image": "images/single-tab.png",
+              "altText": "The view next to an editor area that shows a single tab for the active file"
+            },
+            "completionEvents": [
+              "onSettingChanged:workbench.editor.showTabs",
+              "onCommand:openEditorGroups.showSingleEditorTab",
+              "onCommand:openEditorGroups.hideEditorTabs"
+            ]
+          },
+          {
+            "id": "openEditorGroups.step.colorizeTabs",
+            "title": "Color the editor tabs by project",
+            "description": "Tint the real editor tab titles (and file labels in other views) with the project color. Needs `workbench.editor.decorations.colors`, which is on by default.\n[Toggle colorized tabs](command:openEditorGroups.toggleColorizeTabs)",
+            "media": {
+              "image": "images/colorized-tabs.png",
+              "altText": "Editor tabs colored in the same colors as the projects in the view"
+            },
+            "completionEvents": [
+              "onSettingChanged:openEditorGroups.colorizeTabs",
+              "onCommand:openEditorGroups.toggleColorizeTabs"
+            ]
+          },
+          {
+            "id": "openEditorGroups.step.projectColors",
+            "title": "Pick project colors",
+            "description": "Each project gets a stable color from a 12-slot palette. Pin a project to a slot with **Set Project Color...** (also in the project's context menu). The slots are theme colors and can be changed in `workbench.colorCustomizations`.\n[Set a project color...](command:openEditorGroups.setProjectColor)\n[Open color customizations](command:workbench.action.openSettings?%5B%22workbench.colorCustomizations%22%5D)",
+            "media": {
+              "markdown": "walkthrough/project-colors.md"
+            },
+            "completionEvents": [
+              "onCommand:openEditorGroups.setProjectColor",
+              "onSettingChanged:openEditorGroups.projectColorOverrides"
+            ]
+          },
+          {
+            "id": "openEditorGroups.step.settings",
+            "title": "Grouping, sorting, paths and icons",
+            "description": "Group by project, folder or solution, sort alphabetically, by tab order, by most recently used or by file type, choose which path is shown next to a file, switch between the color bar and file-type icons, and decide which buttons appear on hover.\n[Open the extension's settings](command:openEditorGroups.openSettings)",
+            "media": {
+              "markdown": "walkthrough/settings.md"
+            },
+            "completionEvents": [
+              "onCommand:openEditorGroups.openSettings"
+            ]
+          },
+          {
+            "id": "openEditorGroups.step.moveView",
+            "title": "Put the view where you want it",
+            "description": "Drag the view's Activity Bar icon into the Explorer to have everything in one side bar, or into the Secondary Side Bar to keep it open next to the editor. **View: Reset View Locations** undoes any move.\n[Move the view...](command:workbench.action.moveView)\n[Move the Primary Side Bar to the other side](command:workbench.action.toggleSidebarPosition)",
+            "media": {
+              "markdown": "walkthrough/move-view.md"
+            },
+            "completionEvents": [
+              "onSettingChanged:workbench.sideBar.location",
+              "onCommand:workbench.action.moveView",
+              "onStepSelected"
+            ]
+          }
+        ]
       }
     ],
     "commands": [
-      {
-        "command": "openEditorGroups.open",
-        "title": "Open",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.openToSide",
-        "title": "Open to the Side",
-        "category": "Open Editor Groups",
-        "icon": "$(split-horizontal)"
-      },
-      {
-        "command": "openEditorGroups.close",
-        "title": "Close",
-        "category": "Open Editor Groups",
-        "icon": "$(close)"
-      },
-      {
-        "command": "openEditorGroups.closeOthers",
-        "title": "Close Others in Project",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.closeSavedInProject",
-        "title": "Close Saved in Project",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.closeProject",
-        "title": "Close All in Project",
-        "category": "Open Editor Groups",
-        "icon": "$(close-all)"
-      },
-      {
-        "command": "openEditorGroups.closeAll",
-        "title": "Close All Editors",
-        "category": "Open Editor Groups",
-        "icon": "$(close-all)"
-      },
-      {
-        "command": "openEditorGroups.closeSaved",
-        "title": "Close Saved Editors",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.saveAll",
-        "title": "Save All",
-        "category": "Open Editor Groups",
-        "icon": "$(save-all)"
-      },
-      {
-        "command": "openEditorGroups.pin",
-        "title": "Pin",
-        "category": "Open Editor Groups",
-        "icon": "$(pin)"
-      },
-      {
-        "command": "openEditorGroups.unpin",
-        "title": "Unpin",
-        "category": "Open Editor Groups",
-        "icon": "$(pinned)"
-      },
-      {
-        "command": "openEditorGroups.revealInExplorer",
-        "title": "Reveal in Explorer View",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.revealInOS",
-        "title": "Reveal in File Explorer",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.copyPath",
-        "title": "Copy Path",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.copyRelativePath",
-        "title": "Copy Relative Path",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.openProjectFile",
-        "title": "Open Project File",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.setProjectColor",
-        "title": "Set Project Color...",
-        "category": "Open Editor Groups",
-        "icon": "$(symbol-color)"
-      },
-      {
-        "command": "openEditorGroups.resetProjectColors",
-        "title": "Reset Project Colors",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.refresh",
-        "title": "Refresh",
-        "category": "Open Editor Groups",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "openEditorGroups.sortAlphabetically",
-        "title": "Sort Alphabetically",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.sortByEditorOrder",
-        "title": "Sort by Editor Order",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.toggleColorizeTabs",
-        "title": "Toggle Colorize Editor Tabs",
-        "category": "Open Editor Groups"
-      },
-      {
-        "command": "openEditorGroups.toggleFileIconStyle",
-        "title": "Toggle File Icon Style (Color Bar / File Type)",
-        "category": "Open Editor Groups"
-      }
+      { "command": "openEditorGroups.open", "title": "Open", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.openToSide", "title": "Open to the Side", "category": "Open Editor Groups", "icon": "$(split-horizontal)" },
+      { "command": "openEditorGroups.close", "title": "Close", "category": "Open Editor Groups", "icon": "$(close)" },
+      { "command": "openEditorGroups.closeOthers", "title": "Close Others in Project", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.closeSavedInProject", "title": "Close Saved in Project", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.closeProject", "title": "Close All in Project", "category": "Open Editor Groups", "icon": "$(close-all)" },
+      { "command": "openEditorGroups.closeAll", "title": "Close All Editors", "category": "Open Editor Groups", "icon": "$(close-all)" },
+      { "command": "openEditorGroups.closeSaved", "title": "Close Saved Editors", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.saveAll", "title": "Save All", "category": "Open Editor Groups", "icon": "$(save-all)" },
+      { "command": "openEditorGroups.pin", "title": "Pin", "category": "Open Editor Groups", "icon": "$(pin)" },
+      { "command": "openEditorGroups.unpin", "title": "Unpin", "category": "Open Editor Groups", "icon": "$(pinned)" },
+      { "command": "openEditorGroups.revealInExplorer", "title": "Reveal in Explorer View", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.revealInOS", "title": "Reveal in File Explorer", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.copyPath", "title": "Copy Path", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.copyRelativePath", "title": "Copy Relative Path", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.openProjectFile", "title": "Open Project File", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.openSolutionFile", "title": "Open Solution File", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.setProjectColor", "title": "Set Project Color...", "category": "Open Editor Groups", "icon": "$(symbol-color)" },
+      { "command": "openEditorGroups.resetProjectColors", "title": "Reset Project Colors", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.refresh", "title": "Refresh", "category": "Open Editor Groups", "icon": "$(refresh)" },
+      { "command": "openEditorGroups.expandAll", "title": "Expand All", "category": "Open Editor Groups", "icon": "$(expand-all)" },
+      { "command": "openEditorGroups.sortAlphabetically", "title": "Sort Alphabetically", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.sortByEditorOrder", "title": "Sort by Editor Order", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.sortByMostRecentlyUsed", "title": "Sort by Most Recently Used", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.sortByFileType", "title": "Sort by File Type", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.toggleColorizeTabs", "title": "Toggle Colorize Editor Tabs", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.toggleFileIconStyle", "title": "Toggle File Icon Style (Color Bar / File Type)", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.hideBuiltInOpenEditors", "title": "Hide Built-in Open Editors View", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.showBuiltInOpenEditors", "title": "Show Built-in Open Editors View", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.showSingleEditorTab", "title": "Show Only the Active Editor Tab", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.hideEditorTabs", "title": "Hide Editor Tabs", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.restoreEditorTabs", "title": "Show All Editor Tabs", "category": "Open Editor Groups" },
+      { "command": "openEditorGroups.openSettings", "title": "Open Settings", "category": "Open Editor Groups", "icon": "$(settings-gear)" },
+      { "command": "openEditorGroups.openWalkthrough", "title": "Getting Started", "category": "Open Editor Groups", "icon": "$(book)" }
     ],
     "menus": {
       "commandPalette": [
@@ -198,151 +209,48 @@
         { "command": "openEditorGroups.copyPath", "when": "false" },
         { "command": "openEditorGroups.copyRelativePath", "when": "false" },
         { "command": "openEditorGroups.openProjectFile", "when": "false" },
-        { "command": "openEditorGroups.setProjectColor", "when": "false" }
+        { "command": "openEditorGroups.openSolutionFile", "when": "false" },
+        { "command": "openEditorGroups.expandAll", "when": "false" }
       ],
       "view/title": [
-        {
-          "command": "openEditorGroups.saveAll",
-          "when": "view == openEditorGroups.view",
-          "group": "navigation@1"
-        },
-        {
-          "command": "openEditorGroups.closeAll",
-          "when": "view == openEditorGroups.view",
-          "group": "navigation@2"
-        },
-        {
-          "command": "openEditorGroups.closeSaved",
-          "when": "view == openEditorGroups.view",
-          "group": "1_close@1"
-        },
-        {
-          "command": "openEditorGroups.sortAlphabetically",
-          "when": "view == openEditorGroups.view && config.openEditorGroups.sortOrder != alphabetical",
-          "group": "2_sort@1"
-        },
-        {
-          "command": "openEditorGroups.sortByEditorOrder",
-          "when": "view == openEditorGroups.view && config.openEditorGroups.sortOrder != editorOrder",
-          "group": "2_sort@2"
-        },
-        {
-          "command": "openEditorGroups.toggleFileIconStyle",
-          "when": "view == openEditorGroups.view",
-          "group": "3_color@1"
-        },
-        {
-          "command": "openEditorGroups.toggleColorizeTabs",
-          "when": "view == openEditorGroups.view",
-          "group": "3_color@2"
-        },
-        {
-          "command": "openEditorGroups.resetProjectColors",
-          "when": "view == openEditorGroups.view",
-          "group": "3_color@3"
-        },
-        {
-          "command": "openEditorGroups.refresh",
-          "when": "view == openEditorGroups.view",
-          "group": "4_refresh@1"
-        }
+        { "command": "openEditorGroups.saveAll", "when": "view == openEditorGroups.view", "group": "navigation@1" },
+        { "command": "openEditorGroups.closeAll", "when": "view == openEditorGroups.view", "group": "navigation@2" },
+        { "command": "openEditorGroups.expandAll", "when": "view == openEditorGroups.view", "group": "navigation@3" },
+        { "command": "openEditorGroups.closeSaved", "when": "view == openEditorGroups.view", "group": "1_close@1" },
+        { "command": "openEditorGroups.sortAlphabetically", "when": "view == openEditorGroups.view && config.openEditorGroups.sortOrder != alphabetical", "group": "2_sort@1" },
+        { "command": "openEditorGroups.sortByEditorOrder", "when": "view == openEditorGroups.view && config.openEditorGroups.sortOrder != editorOrder", "group": "2_sort@2" },
+        { "command": "openEditorGroups.sortByMostRecentlyUsed", "when": "view == openEditorGroups.view && config.openEditorGroups.sortOrder != mostRecentlyUsed", "group": "2_sort@3" },
+        { "command": "openEditorGroups.sortByFileType", "when": "view == openEditorGroups.view && config.openEditorGroups.sortOrder != fileType", "group": "2_sort@4" },
+        { "command": "openEditorGroups.toggleFileIconStyle", "when": "view == openEditorGroups.view", "group": "3_color@1" },
+        { "command": "openEditorGroups.toggleColorizeTabs", "when": "view == openEditorGroups.view", "group": "3_color@2" },
+        { "command": "openEditorGroups.setProjectColor", "when": "view == openEditorGroups.view", "group": "3_color@3" },
+        { "command": "openEditorGroups.resetProjectColors", "when": "view == openEditorGroups.view", "group": "3_color@4" },
+        { "command": "openEditorGroups.openSettings", "when": "view == openEditorGroups.view", "group": "4_help@1" },
+        { "command": "openEditorGroups.openWalkthrough", "when": "view == openEditorGroups.view", "group": "4_help@2" },
+        { "command": "openEditorGroups.refresh", "when": "view == openEditorGroups.view", "group": "5_refresh@1" }
       ],
       "view/item/context": [
-        {
-          "command": "openEditorGroups.pin",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/ && viewItem =~ /:unpinned/",
-          "group": "inline@1"
-        },
-        {
-          "command": "openEditorGroups.unpin",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/ && viewItem =~ /:pinned/",
-          "group": "inline@1"
-        },
-        {
-          "command": "openEditorGroups.close",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/",
-          "group": "inline@2"
-        },
-        {
-          "command": "openEditorGroups.openToSide",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/",
-          "group": "1_open@1"
-        },
-        {
-          "command": "openEditorGroups.revealInExplorer",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/",
-          "group": "1_open@2"
-        },
-        {
-          "command": "openEditorGroups.revealInOS",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/ && viewItem =~ /:local/",
-          "group": "1_open@3"
-        },
-        {
-          "command": "openEditorGroups.copyPath",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/",
-          "group": "2_copy@1"
-        },
-        {
-          "command": "openEditorGroups.copyRelativePath",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/",
-          "group": "2_copy@2"
-        },
-        {
-          "command": "openEditorGroups.pin",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/ && viewItem =~ /:unpinned/",
-          "group": "3_pin@1"
-        },
-        {
-          "command": "openEditorGroups.unpin",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/ && viewItem =~ /:pinned/",
-          "group": "3_pin@1"
-        },
-        {
-          "command": "openEditorGroups.close",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/",
-          "group": "4_close@1"
-        },
-        {
-          "command": "openEditorGroups.closeOthers",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/",
-          "group": "4_close@2"
-        },
-        {
-          "command": "openEditorGroups.closeSavedInProject",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/",
-          "group": "4_close@3"
-        },
-        {
-          "command": "openEditorGroups.closeProject",
-          "when": "view == openEditorGroups.view && viewItem =~ /^tab:/",
-          "group": "4_close@4"
-        },
-        {
-          "command": "openEditorGroups.closeProject",
-          "when": "view == openEditorGroups.view && viewItem =~ /^project:/",
-          "group": "inline@2"
-        },
-        {
-          "command": "openEditorGroups.setProjectColor",
-          "when": "view == openEditorGroups.view && viewItem =~ /^project:/ && viewItem =~ /:colorable/",
-          "group": "1_project@1"
-        },
-        {
-          "command": "openEditorGroups.openProjectFile",
-          "when": "view == openEditorGroups.view && viewItem =~ /^project:/ && viewItem =~ /:hasFile/",
-          "group": "1_project@2"
-        },
-        {
-          "command": "openEditorGroups.closeSavedInProject",
-          "when": "view == openEditorGroups.view && viewItem =~ /^project:/",
-          "group": "4_close@1"
-        },
-        {
-          "command": "openEditorGroups.closeProject",
-          "when": "view == openEditorGroups.view && viewItem =~ /^project:/",
-          "group": "4_close@2"
-        }
+        { "command": "openEditorGroups.pin", "when": "view == openEditorGroups.view && config.openEditorGroups.showPinButton && viewItem =~ /^tab:/ && viewItem =~ /:unpinned/", "group": "inline@1" },
+        { "command": "openEditorGroups.unpin", "when": "view == openEditorGroups.view && config.openEditorGroups.showPinButton && viewItem =~ /^tab:/ && viewItem =~ /:pinned/", "group": "inline@1" },
+        { "command": "openEditorGroups.close", "when": "view == openEditorGroups.view && config.openEditorGroups.showCloseButton && viewItem =~ /^tab:/", "group": "inline@2" },
+        { "command": "openEditorGroups.closeProject", "when": "view == openEditorGroups.view && config.openEditorGroups.showCloseButton && viewItem =~ /^(project|solution|pinned):|^pinned$/", "group": "inline@2" },
+        { "command": "openEditorGroups.openToSide", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/", "group": "1_open@1" },
+        { "command": "openEditorGroups.revealInExplorer", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/", "group": "1_open@2" },
+        { "command": "openEditorGroups.revealInOS", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/ && viewItem =~ /:local/", "group": "1_open@3" },
+        { "command": "openEditorGroups.copyPath", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/", "group": "2_copy@1" },
+        { "command": "openEditorGroups.copyRelativePath", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/", "group": "2_copy@2" },
+        { "command": "openEditorGroups.pin", "when": "view == openEditorGroups.view && viewItem =~ /^tab:/ && viewItem =~ /:unpinned/", "group": "3_edit@1" },
+        { "command": "openEditorGroups.unpin", "when": "view == openEditorGroups.view && viewItem =~ /^tab:/ && viewItem =~ /:pinned/", "group": "3_edit@1" },
+        { "command": "openEditorGroups.setProjectColor", "when": "view == openEditorGroups.view && viewItem =~ /^tab:/ && viewItem =~ /:colorable/", "group": "3_edit@2" },
+        { "command": "openEditorGroups.close", "when": "view == openEditorGroups.view && viewItem =~ /^tab:/", "group": "4_close@1" },
+        { "command": "openEditorGroups.closeOthers", "when": "view == openEditorGroups.view && viewItem =~ /^tab:/", "group": "4_close@2" },
+        { "command": "openEditorGroups.closeSavedInProject", "when": "view == openEditorGroups.view && viewItem =~ /^tab:/", "group": "4_close@3" },
+        { "command": "openEditorGroups.closeProject", "when": "view == openEditorGroups.view && viewItem =~ /^tab:/", "group": "4_close@4" },
+        { "command": "openEditorGroups.setProjectColor", "when": "view == openEditorGroups.view && viewItem =~ /^project:/ && viewItem =~ /:colorable/", "group": "1_project@1" },
+        { "command": "openEditorGroups.openProjectFile", "when": "view == openEditorGroups.view && viewItem =~ /^project:/ && viewItem =~ /:hasFile/", "group": "1_project@2" },
+        { "command": "openEditorGroups.openSolutionFile", "when": "view == openEditorGroups.view && viewItem =~ /^solution:/ && viewItem =~ /:hasFile/", "group": "1_project@2" },
+        { "command": "openEditorGroups.closeSavedInProject", "when": "view == openEditorGroups.view && viewItem =~ /^(project|solution|editorGroup):|^pinned$|^editorGroup$/", "group": "4_close@1" },
+        { "command": "openEditorGroups.closeProject", "when": "view == openEditorGroups.view && viewItem =~ /^(project|solution):|^pinned$|^editorGroup$/", "group": "4_close@2" }
       ]
     },
     "configuration": {
@@ -350,6 +258,7 @@
       "properties": {
         "openEditorGroups.projectFilePatterns": {
           "type": "array",
+          "order": 1,
           "items": {
             "type": "string"
           },
@@ -374,21 +283,95 @@
           ],
           "markdownDescription": "File name patterns that identify a project root. An open editor is grouped under the nearest enclosing folder that contains a matching file. Patterns support `*` and `?` and are matched case-insensitively against file names. Earlier patterns win when a folder contains several matches."
         },
+        "openEditorGroups.groupBy": {
+          "type": "string",
+          "order": 2,
+          "enum": [
+            "project",
+            "folder",
+            "workspaceFolder",
+            "none"
+          ],
+          "enumDescriptions": [
+            "Group editors by the nearest enclosing project file (see openEditorGroups.projectFilePatterns).",
+            "Group editors by the folder that contains the file, labeled with the workspace-relative folder path.",
+            "Group editors by workspace folder.",
+            "Do not group; show a flat list of editors."
+          ],
+          "default": "project",
+          "markdownDescription": "How open editors are grouped. Editor colors always come from the file's project (or from `#openEditorGroups.colorRules#`), whatever the grouping."
+        },
+        "openEditorGroups.solutionNodes": {
+          "type": "string",
+          "order": 3,
+          "enum": [
+            "auto",
+            "always",
+            "never"
+          ],
+          "enumDescriptions": [
+            "Add a node per solution when the workspace contains two or more solution files.",
+            "Add a node per solution whenever at least one solution file exists.",
+            "Never add solution nodes."
+          ],
+          "default": "auto",
+          "markdownDescription": "Groups projects under the Visual Studio solution (`*.sln`, `*.slnx`) that references them. Projects that are in no solution are listed under **Other projects**. Only applies when `#openEditorGroups.groupBy#` is `project` or `folder`."
+        },
+        "openEditorGroups.groupByEditorGroup": {
+          "type": "boolean",
+          "order": 4,
+          "default": true,
+          "description": "When the editor area is split into several editor groups, add a top-level node per editor group (Group 1, Group 2, ...). With a single editor group this has no effect."
+        },
+        "openEditorGroups.hideSingleGroup": {
+          "type": "boolean",
+          "order": 5,
+          "default": false,
+          "description": "When all open editors belong to a single project and there are no editor-group, solution or Pinned nodes, list the editors directly without the project header."
+        },
+        "openEditorGroups.showNonFileEditors": {
+          "type": "boolean",
+          "order": 6,
+          "default": true,
+          "description": "Also list editors that are not backed by a file (Settings, Welcome, webviews, terminals in the editor area, ...) under an 'Other' node."
+        },
         "openEditorGroups.sortOrder": {
           "type": "string",
+          "order": 10,
           "enum": [
             "alphabetical",
-            "editorOrder"
+            "editorOrder",
+            "mostRecentlyUsed",
+            "fileType"
           ],
           "enumDescriptions": [
             "Sort files within a project alphabetically (case-insensitive, like Visual Studio).",
-            "Show files in the order of their tabs in the editor area."
+            "Show files in the order of their tabs in the editor area.",
+            "Most recently activated editor first; editors never activated in this session follow in editor order.",
+            "By file extension, then by name."
           ],
           "default": "alphabetical",
-          "description": "How files are ordered inside each project. Pinned editors are always listed first."
+          "markdownDescription": "How files are ordered inside each project. See `#openEditorGroups.pinnedEditors#` for pinned editors."
+        },
+        "openEditorGroups.pinnedEditors": {
+          "type": "string",
+          "order": 11,
+          "enum": [
+            "first",
+            "separateGroup",
+            "inline"
+          ],
+          "enumDescriptions": [
+            "List pinned editors first inside each project.",
+            "Collect the pinned editors of all projects in one top-level Pinned node.",
+            "Sort pinned editors like any other editor."
+          ],
+          "default": "first",
+          "description": "Where pinned editors are shown."
         },
         "openEditorGroups.pathStyle": {
           "type": "string",
+          "order": 20,
           "enum": [
             "relativeToProject",
             "relativeToWorkspace",
@@ -404,6 +387,7 @@
         },
         "openEditorGroups.fileIconStyle": {
           "type": "string",
+          "order": 21,
           "enum": [
             "projectColorBar",
             "fileType"
@@ -415,35 +399,134 @@
           "default": "projectColorBar",
           "description": "Icon shown in front of each open editor."
         },
-        "openEditorGroups.groupByEditorGroup": {
-          "type": "boolean",
-          "default": true,
-          "description": "When the editor area is split into several editor groups, add a top-level node per editor group (Group 1, Group 2, ...). With a single editor group this has no effect."
+        "openEditorGroups.headerIcon": {
+          "type": "string",
+          "order": 22,
+          "enum": [
+            "auto",
+            "bar",
+            "dot",
+            "none"
+          ],
+          "enumDescriptions": [
+            "Show the color bar on project headers only when files show their file-type icon (openEditorGroups.fileIconStyle: fileType).",
+            "Always show the color bar on project headers.",
+            "Always show a colored dot on project headers.",
+            "Never show an icon on project headers."
+          ],
+          "default": "auto",
+          "description": "Icon shown in front of project headers, in the project's color."
         },
-        "openEditorGroups.showNonFileEditors": {
+        "openEditorGroups.showEditorCount": {
           "type": "boolean",
+          "order": 23,
+          "default": false,
+          "description": "Show the number of open editors next to each project, solution and Pinned node."
+        },
+        "openEditorGroups.dirtyIndicator": {
+          "type": "string",
+          "order": 24,
+          "enum": [
+            "dot",
+            "asterisk",
+            "none"
+          ],
+          "enumDescriptions": [
+            "Append ● to the name of editors with unsaved changes.",
+            "Append * to the name of editors with unsaved changes.",
+            "Do not mark editors with unsaved changes (the view badge still counts them)."
+          ],
+          "default": "dot",
+          "description": "How editors with unsaved changes are marked."
+        },
+        "openEditorGroups.emphasizeActiveEditor": {
+          "type": "boolean",
+          "order": 25,
           "default": true,
-          "description": "Also list editors that are not backed by a file (Settings, Welcome, webviews, terminals in the editor area, ...) under an 'Other' node."
+          "description": "Show the name of the active editor in bold (uses the theme's list.highlightForeground color)."
         },
         "openEditorGroups.autoReveal": {
           "type": "boolean",
+          "order": 26,
           "default": true,
           "description": "Select and reveal the active editor in the view when it changes."
         },
+        "openEditorGroups.focusEditorOnClick": {
+          "type": "boolean",
+          "order": 30,
+          "default": true,
+          "markdownDescription": "Move keyboard focus to the editor when a file is clicked in the view. When `false` the editor is shown but focus stays in the view."
+        },
+        "openEditorGroups.showPinButton": {
+          "type": "boolean",
+          "order": 31,
+          "default": true,
+          "description": "Show the inline Pin/Unpin button when hovering a file in the view. The commands stay available in the context menu."
+        },
+        "openEditorGroups.showCloseButton": {
+          "type": "boolean",
+          "order": 32,
+          "default": true,
+          "description": "Show the inline Close button when hovering a file (and Close All when hovering a project). The commands stay available in the context menu."
+        },
+        "openEditorGroups.colorBy": {
+          "type": "string",
+          "order": 40,
+          "enum": [
+            "project",
+            "rules",
+            "none"
+          ],
+          "enumDescriptions": [
+            "Color each editor with the color of its project.",
+            "Color each editor by the first matching rule in openEditorGroups.colorRules.",
+            "Do not color editors."
+          ],
+          "default": "project",
+          "markdownDescription": "How editor colors are chosen. The color is used for the bar icon, the project header icon and, with `#openEditorGroups.colorizeTabs#`, the editor tab titles."
+        },
+        "openEditorGroups.colorRules": {
+          "type": "array",
+          "order": 41,
+          "default": [],
+          "items": {
+            "type": "object",
+            "required": [
+              "pattern",
+              "color"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Case-insensitive regular expression matched against the workspace-relative path of the file (forward slashes). Files outside the workspace are matched against their full path."
+              },
+              "color": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12,
+                "description": "Palette slot 1-12 (openEditorGroups.projectColor1 ... 12)."
+              }
+            }
+          },
+          "markdownDescription": "Rules used when `#openEditorGroups.colorBy#` is `rules`. The first matching rule wins; files matching no rule use `openEditorGroups.unassignedColor`. Example: `[{ \"pattern\": \"\\\\.razor$\", \"color\": 4 }, { \"pattern\": \"^src/\", \"color\": 1 }]`."
+        },
         "openEditorGroups.colorizeTabs": {
           "type": "boolean",
+          "order": 42,
           "default": false,
           "markdownDescription": "Also color the titles of the real editor tabs (and the file's label in other views) with the project color, using file decorations. Requires `#workbench.editor.decorations.colors#` to be enabled. Source control and problem decorations keep precedence for files that have them."
         },
         "openEditorGroups.projectColorOverrides": {
           "type": "object",
+          "order": 43,
           "additionalProperties": {
             "type": "integer",
             "minimum": 1,
             "maximum": 12
           },
           "default": {},
-          "markdownDescription": "Pins a project name to a palette slot (1-12), for example `{ \"Contoso.Server\": 3 }`. Edit with the **Set Project Color...** context menu command. The slot colors themselves are theme colors named `openEditorGroups.projectColor1` ... `openEditorGroups.projectColor12` and can be changed in `#workbench.colorCustomizations#`."
+          "markdownDescription": "Pins a project name to a palette slot (1-12), for example `{ \"Contoso.Server\": 3 }`. Edit with the **Set Project Color...** command. The slot colors themselves are theme colors named `openEditorGroups.projectColor1` ... `openEditorGroups.projectColor12` and can be changed in `#workbench.colorCustomizations#`."
         }
       }
     },
