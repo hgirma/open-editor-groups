@@ -1,5 +1,5 @@
 {
-  "name": "open-editor-groups",
+  "name": "open-editors-by-project",
   "displayName": "Open Editor Groups",
   "description": "Groups open editors by project (like the Visual Studio 2026 Tabs window) and colorizes them per project.",
   "version": "0.2.2",
