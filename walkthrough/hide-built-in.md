@@ -1,6 +1,6 @@
 # Two lists of the same files
 
-The Explorer has a built-in **Open Editors** section at its top. It lists every open editor in tab order, without grouping. Once you use the **Open Editor Groups** view, that section only repeats what the view already shows.
+The Explorer has a built-in **Open Editors** section at its top. It lists every open editor in tab order, without grouping. Once you use the **Open Editor Group** view, that section only repeats what the view already shows.
 
 Hiding it writes this to your **user** settings (it is not a workspace setting):
 
@@ -12,4 +12,4 @@ Hiding it writes this to your **user** settings (it is not a workspace setting):
 
 [Show it again](command:openEditorGroups.showBuiltInOpenEditors)
 
-**Prefer everything in one side bar?** Drag the *Open Editor Groups* icon from the Activity Bar into the Explorer, then drag its header above *Folders*. The next step of this walkthrough shows how to shrink the editor tab bar as well.
+**Prefer everything in one side bar?** Drag the *Open Editor Group* icon from the Activity Bar into the Explorer, then drag its header above *Folders*. The next step of this walkthrough shows how to shrink the editor tab bar as well.
