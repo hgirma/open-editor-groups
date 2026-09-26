@@ -3,6 +3,8 @@
 ## 0.2.1
 
 - With `openEditorGroups.groupByEditorGroup` off, files no longer get a "Group 1" suffix (which looked like a count) as soon as a second editor group appears. Only editors outside the first group that holds a file are marked, with the text "editor group N".
+- Fixes from a code review: "Open to the Side" with several files selected opens all of them (previews no longer replace each other); multi-file Copy Path / Copy Relative Path now produces the same paths as the single-file commands; Reveal in Explorer works for `git:` tabs; the workspace-root guard of the project lookup is case-insensitive on Windows; two editors on the same file keep stable ids; output channels opened as editors show their tab title and are listed under *Other*; tab-title decorations are only refreshed for files whose color changed; the "most recently used" order ignores changes in background editor groups.
+- `openEditorGroups.colorRules` is a restricted setting in untrusted workspaces, and the extension ships a Marketplace icon.
 
 ## 0.2.0
 

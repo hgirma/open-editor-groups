@@ -208,7 +208,7 @@ export class OpenEditorGroupsProvider implements vscode.TreeDataProvider<Node>, 
     const colorable = cfg.colorBy === 'project' && !!node.colorKey;
     item.contextValue = [
       'tab',
-      uri ? 'file' : 'nofile',
+      node.isFile ? 'file' : 'nofile',
       tab.isPinned ? 'pinned' : 'unpinned',
       tab.isDirty ? 'dirty' : 'clean',
       uri?.scheme === 'file' ? 'local' : 'remote',

@@ -15,7 +15,7 @@ export class OpenEditorGroupsDragAndDrop implements vscode.TreeDragAndDropContro
   handleDrag(source: readonly Node[], dataTransfer: vscode.DataTransfer): void {
     const uris = new Set<string>();
     for (const node of tabsOf(source)) {
-      if (node.uri) {
+      if (node.isFile && node.uri) {
         uris.add(node.uri.toString());
       }
     }

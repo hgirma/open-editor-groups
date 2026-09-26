@@ -4,7 +4,7 @@ import { ColorAssigner, isValidSlot, PALETTE_NAMES, PALETTE_SIZE } from './color
 import { getConfig, updateSetting } from './config';
 import { ProjectColorDecorations } from './decorations';
 import { descendantTabs, Model, Node, TabNode } from './model';
-import { ProjectResolver } from './projectResolver';
+import { lookupUri, ProjectResolver } from './projectResolver';
 import { isNode, scopeTabsOf, tabsOf } from './selection';
 import { SolutionResolver } from './solutionResolver';
 import { OpenEditorGroupsProvider, VIEW_ID } from './tree';
@@ -74,15 +74,16 @@ export function registerCommands(context: vscode.ExtensionContext, services: Ser
   });
 
   register('openEditorGroups.openToSide', async (arg, selection) => {
-    const uris = tabTargets(arg, selection).map((t) => t.uri).filter((u): u is vscode.Uri => !!u);
+    const uris = fileUris(tabTargets(arg, selection));
     if (uris.length === 0) {
       return;
     }
-    await vscode.commands.executeCommand('vscode.open', uris[0], vscode.ViewColumn.Beside);
+    // preview: false, otherwise each file would replace the previous one's preview tab.
+    await vscode.commands.executeCommand('vscode.open', uris[0], { viewColumn: vscode.ViewColumn.Beside, preview: false });
     // "Beside" is relative to the active group, so resolve it once for the remaining files.
-    const column = vscode.window.tabGroups.activeTabGroup.viewColumn;
+    const viewColumn = vscode.window.tabGroups.activeTabGroup.viewColumn;
     for (const uri of uris.slice(1)) {
-      await vscode.commands.executeCommand('vscode.open', uri, column);
+      await vscode.commands.executeCommand('vscode.open', uri, { viewColumn, preview: false });
     }
   });
 
@@ -145,15 +146,15 @@ export function registerCommands(context: vscode.ExtensionContext, services: Ser
 
   register('openEditorGroups.revealInExplorer', async (arg) => {
     const node = asTab(arg);
-    if (node?.uri) {
-      await vscode.commands.executeCommand('revealInExplorer', node.uri);
+    if (node?.isFile && node.uri) {
+      await vscode.commands.executeCommand('revealInExplorer', lookupUri(node.uri));
     }
   });
 
   register('openEditorGroups.revealInOS', async (arg) => {
     const node = asTab(arg);
-    if (node?.uri) {
-      await vscode.commands.executeCommand('revealFileInOS', node.uri);
+    if (node?.isFile && node.uri) {
+      await vscode.commands.executeCommand('revealFileInOS', lookupUri(node.uri));
     }
   });
 
@@ -328,20 +329,30 @@ async function pickColorKey(model: Model): Promise<{ colorKey: string; slot: num
   return picked ? { colorKey: picked.colorKey, slot: picked.slot } : undefined;
 }
 
+function fileUris(nodes: readonly TabNode[]): vscode.Uri[] {
+  return nodes.filter((t) => t.isFile).map((t) => t.uri).filter((u): u is vscode.Uri => !!u);
+}
+
+/**
+ * Copies one path per line. Each path comes from the built-in command so the
+ * result is identical to the Explorer's (remote paths, the configured
+ * relative-path separator); for several files the results are joined.
+ */
 async function copyPaths(nodes: TabNode[], relative: boolean): Promise<void> {
-  const uris = nodes.map((t) => t.uri).filter((u): u is vscode.Uri => !!u);
+  const uris = fileUris(nodes);
   if (uris.length === 0) {
     return;
   }
+  const command = relative ? 'copyRelativeFilePath' : 'copyFilePath';
   if (uris.length === 1) {
-    // The built-in commands honour explorer.copyRelativePathSeparator and remote paths.
-    await vscode.commands.executeCommand(relative ? 'copyRelativeFilePath' : 'copyFilePath', uris[0]);
+    await vscode.commands.executeCommand(command, uris[0]);
     return;
   }
-  const multiRoot = (vscode.workspace.workspaceFolders?.length ?? 0) > 1;
-  const lines = uris.map((uri) =>
-    relative ? vscode.workspace.asRelativePath(uri, multiRoot) : uri.scheme === 'file' ? uri.fsPath : uri.toString(true),
-  );
+  const lines: string[] = [];
+  for (const uri of uris) {
+    await vscode.commands.executeCommand(command, uri);
+    lines.push(await vscode.env.clipboard.readText());
+  }
   await vscode.env.clipboard.writeText(lines.join(os.EOL));
 }
 

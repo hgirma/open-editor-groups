@@ -12,36 +12,51 @@ export class ProjectColorDecorations implements vscode.FileDecorationProvider, v
   readonly onDidChangeFileDecorations = this._onDidChange.event;
 
   private model: Model = emptyModel(getConfig());
+  private enabled = getConfig().colorizeTabs;
   private projectNameByUri = new Map<string, string>();
 
   setModel(model: Model): void {
-    const changed = new Set<string>([...this.model.slotByUri.keys(), ...model.slotByUri.keys()]);
+    // Only resources whose slot appeared, disappeared or changed need to be re-decorated.
+    const changed: vscode.Uri[] = [];
+    for (const [key, slot] of model.slotByUri) {
+      if (this.model.slotByUri.get(key) !== slot) {
+        changed.push(vscode.Uri.parse(key));
+      }
+    }
+    for (const key of this.model.slotByUri.keys()) {
+      if (!model.slotByUri.has(key)) {
+        changed.push(vscode.Uri.parse(key));
+      }
+    }
     this.model = model;
+    this.enabled = model.cfg.colorizeTabs;
     this.projectNameByUri = new Map();
     for (const node of model.byTab.values()) {
       if (node.uri && node.projectLabel) {
         this.projectNameByUri.set(node.uri.toString(), node.projectLabel);
       }
     }
-    if (changed.size > 0) {
-      this._onDidChange.fire([...changed].map((s) => vscode.Uri.parse(s)));
+    if (changed.length > 0) {
+      this._onDidChange.fire(changed);
     }
   }
 
   /** Re-queries every decoration, e.g. after the setting was toggled. */
   refreshAll(): void {
+    this.enabled = getConfig().colorizeTabs;
     this._onDidChange.fire(undefined);
   }
 
   provideFileDecoration(uri: vscode.Uri): vscode.FileDecoration | undefined {
-    if (!getConfig().colorizeTabs) {
+    if (!this.enabled) {
       return undefined;
     }
-    const slot = this.model.slotByUri.get(uri.toString());
+    const key = uri.toString();
+    const slot = this.model.slotByUri.get(key);
     if (!slot) {
       return undefined;
     }
-    const decoration = new vscode.FileDecoration(undefined, this.projectNameByUri.get(uri.toString()), new vscode.ThemeColor(colorIdForSlot(slot)));
+    const decoration = new vscode.FileDecoration(undefined, this.projectNameByUri.get(key), new vscode.ThemeColor(colorIdForSlot(slot)));
     decoration.propagate = false;
     return decoration;
   }

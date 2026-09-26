@@ -3,7 +3,16 @@ import { ColorAssigner } from './colors';
 import { compileColorRules, CompiledColorRule, matchColorRule } from './colorRules';
 import { ExtensionConfig } from './config';
 import { MruTracker } from './mru';
-import { baseName, compareOrdinalIgnoreCase, displayPath, lookupUri, parentOf, ProjectInfo, ProjectResolver } from './projectResolver';
+import {
+  baseName,
+  compareOrdinalIgnoreCase,
+  displayPath,
+  isHierarchical,
+  lookupUri,
+  parentOf,
+  ProjectInfo,
+  ProjectResolver,
+} from './projectResolver';
 import { SolutionInfo, SolutionResolver } from './solutionResolver';
 
 /** What a bucket of editors stands for. Sorted in this order in the view. */
@@ -72,6 +81,8 @@ export interface TabNode {
   readonly label: string;
   readonly tab: vscode.Tab;
   readonly uri: vscode.Uri | undefined;
+  /** True when `uri` names a real (hierarchical, non-untitled) resource that file commands can act on. */
+  readonly isFile: boolean;
   /** Folder path shown next to the name (already formatted for the configured path style). */
   readonly pathDescription: string;
   /**
@@ -273,6 +284,10 @@ class ModelBuilder {
     if (uri.scheme === 'untitled') {
       return { ...ref, uri, category: 'untitled' };
     }
+    if (!isHierarchical(uri)) {
+      // e.g. output channels opened as editors: not files, so they go to "Other" like webviews.
+      return this.cfg.showNonFileEditors ? { ...ref, uri, category: 'other' } : undefined;
+    }
     const target = lookupUri(uri);
     const project = await this.services.resolver.resolve(target);
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(target);
@@ -439,6 +454,7 @@ class ModelBuilder {
       label: tabLabel(c.tab, c.uri),
       tab: c.tab,
       uri: c.uri,
+      isFile: !!c.uri && c.uri.scheme !== 'untitled' && isHierarchical(c.uri),
       pathDescription: this.cfg.groupBy === 'folder' ? '' : pathDescription(c.uri, c.project, this.cfg, this.multiRoot),
       // In the flattened multi-group list only editors outside the anchor group are annotated,
       // so a lone split (e.g. Settings opened to the side) does not tag every file.
@@ -462,12 +478,12 @@ class ModelBuilder {
     return node;
   }
 
-  /** Sorts the tabs of one container and gives them stable ids. */
+  /** Sorts the tabs of one container and gives them stable ids (independent of the sort position). */
   private finishTabs(tabs: TabNode[], parentId: string | undefined): void {
     tabs.sort(this.compareTabs);
     const prefix = parentId ? `${parentId}/` : '';
     for (const t of tabs) {
-      t.id = uniqueId(this.ids, `${prefix}tab:${t.uri?.toString() ?? `label:${t.tab.label}`}`);
+      t.id = uniqueId(this.ids, `${prefix}tab:${inputKind(t.tab)}:${t.uri?.toString() ?? `label:${t.tab.label}`}`);
     }
   }
 
@@ -576,18 +592,45 @@ function uniqueId(ids: Set<string>, id: string): string {
   return candidate;
 }
 
+/** Short tag for the kind of editor a tab holds, so two editors on one resource get distinct ids. */
+function inputKind(tab: vscode.Tab): string {
+  const input = tab.input;
+  if (input instanceof vscode.TabInputText) {
+    return 'text';
+  }
+  if (input instanceof vscode.TabInputTextDiff) {
+    return 'diff';
+  }
+  if (input instanceof vscode.TabInputCustom) {
+    return `custom(${input.viewType})`;
+  }
+  if (input instanceof vscode.TabInputNotebook) {
+    return 'notebook';
+  }
+  if (input instanceof vscode.TabInputNotebookDiff) {
+    return 'notebookDiff';
+  }
+  if (input instanceof vscode.TabInputWebview) {
+    return `webview(${input.viewType})`;
+  }
+  if (input instanceof vscode.TabInputTerminal) {
+    return 'terminal';
+  }
+  return 'other';
+}
+
 function tabLabel(tab: vscode.Tab, uri: vscode.Uri | undefined): string {
   const input = tab.input;
   const fileLike =
     input instanceof vscode.TabInputText || input instanceof vscode.TabInputCustom || input instanceof vscode.TabInputNotebook;
-  if (uri && fileLike && uri.scheme !== 'untitled') {
+  if (uri && fileLike && uri.scheme !== 'untitled' && isHierarchical(uri)) {
     return baseName(uri) || tab.label;
   }
   return tab.label;
 }
 
 function pathDescription(uri: vscode.Uri | undefined, project: ProjectInfo | undefined, cfg: ExtensionConfig, multiRoot: boolean): string {
-  if (cfg.pathStyle === 'none' || !uri || uri.scheme === 'untitled') {
+  if (cfg.pathStyle === 'none' || !uri || uri.scheme === 'untitled' || !isHierarchical(uri)) {
     return '';
   }
   const target = lookupUri(uri);

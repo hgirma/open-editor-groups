@@ -237,7 +237,7 @@
         { "command": "openEditorGroups.pin", "when": "view == openEditorGroups.view && config.openEditorGroups.showPinButton && viewItem =~ /^tab:/ && viewItem =~ /:unpinned/", "group": "inline@1" },
         { "command": "openEditorGroups.unpin", "when": "view == openEditorGroups.view && config.openEditorGroups.showPinButton && viewItem =~ /^tab:/ && viewItem =~ /:pinned/", "group": "inline@1" },
         { "command": "openEditorGroups.close", "when": "view == openEditorGroups.view && config.openEditorGroups.showCloseButton && viewItem =~ /^tab:/", "group": "inline@2" },
-        { "command": "openEditorGroups.closeProject", "when": "view == openEditorGroups.view && config.openEditorGroups.showCloseButton && viewItem =~ /^(project|solution|pinned):|^pinned$/", "group": "inline@2" },
+        { "command": "openEditorGroups.closeProject", "when": "view == openEditorGroups.view && config.openEditorGroups.showCloseButton && viewItem =~ /^(project|solution):/", "group": "inline@2" },
         { "command": "openEditorGroups.openToSide", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/", "group": "1_open@1" },
         { "command": "openEditorGroups.revealInExplorer", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/", "group": "1_open@2" },
         { "command": "openEditorGroups.revealInOS", "when": "view == openEditorGroups.view && viewItem =~ /^tab:file/ && viewItem =~ /:local/", "group": "1_open@3" },
@@ -253,8 +253,8 @@
         { "command": "openEditorGroups.setProjectColor", "when": "view == openEditorGroups.view && viewItem =~ /^project:/ && viewItem =~ /:colorable/", "group": "1_project@1" },
         { "command": "openEditorGroups.openProjectFile", "when": "view == openEditorGroups.view && viewItem =~ /^project:/ && viewItem =~ /:hasFile/", "group": "1_project@2" },
         { "command": "openEditorGroups.openSolutionFile", "when": "view == openEditorGroups.view && viewItem =~ /^solution:/ && viewItem =~ /:hasFile/", "group": "1_project@2" },
-        { "command": "openEditorGroups.closeSavedInProject", "when": "view == openEditorGroups.view && viewItem =~ /^(project|solution|editorGroup):|^pinned$|^editorGroup$/", "group": "4_close@1" },
-        { "command": "openEditorGroups.closeProject", "when": "view == openEditorGroups.view && viewItem =~ /^(project|solution):|^pinned$|^editorGroup$/", "group": "4_close@2" }
+        { "command": "openEditorGroups.closeSavedInProject", "when": "view == openEditorGroups.view && viewItem =~ /^(project|solution):|^editorGroup$/", "group": "4_close@1" },
+        { "command": "openEditorGroups.closeProject", "when": "view == openEditorGroups.view && viewItem =~ /^(project|solution):|^editorGroup$/", "group": "4_close@2" }
       ]
     },
     "configuration": {

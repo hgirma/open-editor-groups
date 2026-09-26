@@ -85,7 +85,7 @@ export class ProjectResolver implements vscode.Disposable {
       if (projectFile) {
         return { fileUri: projectFile, dirUri: dir, name: projectDisplayName(projectFile, dir), key: projectFile.toString() };
       }
-      if (folder && dir.path === folder.uri.path && dir.scheme === folder.uri.scheme) {
+      if (folder && samePath(dir, folder.uri)) {
         break; // do not look above the workspace folder
       }
       const parent = parentOf(dir);
@@ -139,6 +139,19 @@ export class ProjectResolver implements vscode.Disposable {
 
 export function parentOf(uri: vscode.Uri): vscode.Uri {
   return vscode.Uri.joinPath(uri, '..');
+}
+
+/** True for URIs whose path is a `/`-rooted hierarchy (files, folders), false for e.g. `output:` channels. */
+export function isHierarchical(uri: vscode.Uri): boolean {
+  return uri.path.startsWith('/');
+}
+
+/** Same location; local file paths compare case-insensitively (drive letters and Windows paths vary in case). */
+export function samePath(a: vscode.Uri, b: vscode.Uri): boolean {
+  if (a.scheme !== b.scheme) {
+    return false;
+  }
+  return a.path === b.path || (a.scheme === 'file' && a.path.toLowerCase() === b.path.toLowerCase());
 }
 
 /** Schemes whose path mirrors a file on disk (e.g. `git:` for "Open File (HEAD)"). */

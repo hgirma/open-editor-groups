@@ -28,7 +28,9 @@ export class MruTracker implements vscode.Disposable {
           this.stamps.delete(tab);
         }
         for (const tab of [...e.opened, ...e.changed]) {
-          if (tab.isActive) {
+          // Only the active tab of the active group counts as "used"; a background group's
+          // active tab also reports changes (e.g. it became dirty) without being used.
+          if (tab.isActive && tab.group.isActive) {
             this.touch(tab);
           }
         }
