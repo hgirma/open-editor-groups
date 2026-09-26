@@ -157,3 +157,7 @@ Press <kbd>F5</kbd> in VS Code to launch an Extension Development Host with the 
 - Dragging a file from the view onto the Explorer copies it into the target folder, as with editor tabs (VS Code's behavior for resource drags).
 - With `focusEditorOnClick: false`, a file in another editor group is shown but that group is not activated.
 - The `.slnx` parser does not decode XML entities in project paths.
+
+## Disclaimer
+
+This extension was vibe coded with [Claude Code](https://claude.com/claude-code) (Claude Fable 5.1). The design, the code, the screenshots and this README were produced by the model in conversation with the author, who steered the features and checked the results in VS Code rather than reviewing every line. The code has been through automated reviews and hands-on testing, but treat it like any young open-source project: read it before relying on it in sensitive environments, and open an issue if something misbehaves.
