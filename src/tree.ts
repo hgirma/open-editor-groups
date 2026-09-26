@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { BAR_ICON_ID, colorIdForSlot } from './colors';
 import { DirtyIndicator, ExtensionConfig, getConfig } from './config';
+import { displayPath } from './projectResolver';
 import {
   buildModel,
   descendantTabs,
@@ -201,8 +202,7 @@ export class OpenEditorGroupsProvider implements vscode.TreeDataProvider<Node>, 
     if (node.projectLabel) {
       lines.push(`Project: ${node.projectLabel}`);
     }
-    const groupText = editorGroupText(tab.group.viewColumn);
-    lines.push(`${groupText.charAt(0).toUpperCase()}${groupText.slice(1)}${state.length ? ` · ${state.join(' · ')}` : ''}`);
+    lines.push(`${editorGroupText(tab.group.viewColumn, true)}${state.length ? ` · ${state.join(' · ')}` : ''}`);
     item.tooltip = lines.join('\n');
 
     const colorable = cfg.colorBy === 'project' && !!node.colorKey;
@@ -243,8 +243,4 @@ function plural(n: number, word: string): string {
 function joinParts(parts: (string | undefined)[]): string | undefined {
   const text = parts.filter((p): p is string => !!p).join(' · ');
   return text || undefined;
-}
-
-function displayPath(uri: vscode.Uri): string {
-  return uri.scheme === 'file' ? uri.fsPath : uri.toString(true);
 }

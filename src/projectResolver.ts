@@ -144,6 +144,11 @@ export function parentOf(uri: vscode.Uri): vscode.Uri {
 /** Schemes whose path mirrors a file on disk (e.g. `git:` for "Open File (HEAD)"). */
 const FILE_MIRROR_SCHEMES = new Set(['git', 'gitlens']);
 
+/** Human readable form of a URI: the file system path for local files, the full URI otherwise. */
+export function displayPath(uri: vscode.Uri): string {
+  return uri.scheme === 'file' ? uri.fsPath : uri.toString(true);
+}
+
 /** The on-disk URI to use for project lookup and path display. */
 export function lookupUri(uri: vscode.Uri): vscode.Uri {
   if (FILE_MIRROR_SCHEMES.has(uri.scheme)) {

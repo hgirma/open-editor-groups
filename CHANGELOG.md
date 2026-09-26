@@ -2,7 +2,7 @@
 
 ## 0.2.1
 
-- With `openEditorGroups.groupByEditorGroup` off, files no longer get a "Group 1" suffix (which looked like a count) as soon as a second editor group appears. Only editors outside the group that holds most of the listed editors are marked, with the text "editor group N".
+- With `openEditorGroups.groupByEditorGroup` off, files no longer get a "Group 1" suffix (which looked like a count) as soon as a second editor group appears. Only editors outside the first group that holds a file are marked, with the text "editor group N".
 
 ## 0.2.0
 

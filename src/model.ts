@@ -3,7 +3,7 @@ import { ColorAssigner } from './colors';
 import { compileColorRules, CompiledColorRule, matchColorRule } from './colorRules';
 import { ExtensionConfig } from './config';
 import { MruTracker } from './mru';
-import { baseName, compareOrdinalIgnoreCase, lookupUri, parentOf, ProjectInfo, ProjectResolver } from './projectResolver';
+import { baseName, compareOrdinalIgnoreCase, displayPath, lookupUri, parentOf, ProjectInfo, ProjectResolver } from './projectResolver';
 import { SolutionInfo, SolutionResolver } from './solutionResolver';
 
 /** What a bucket of editors stands for. Sorted in this order in the view. */
@@ -74,7 +74,10 @@ export interface TabNode {
   readonly uri: vscode.Uri | undefined;
   /** Folder path shown next to the name (already formatted for the configured path style). */
   readonly pathDescription: string;
-  /** "editor group N" for editors outside the first group when several groups are flattened into one list. */
+  /**
+   * "editor group N" when several editor groups are flattened into one list and this
+   * editor is outside the anchor group (the lowest group that holds a file-backed editor).
+   */
   readonly groupLabel: string | undefined;
   parent: ContainerNode | undefined;
   /** Position of the tab in the editor area, used for the "editor order" sort. */
@@ -195,7 +198,7 @@ class ModelBuilder {
   private readonly rules: CompiledColorRule[];
   private readonly multiRoot: boolean;
   private tabCount = 0;
-  /** In the flattened multi-group list: the group most listed editors belong to. Undefined when no group annotation is needed. */
+  /** In the flattened multi-group list: the anchor group whose editors are not annotated. Undefined when no annotation is needed. */
   private mainColumn: vscode.ViewColumn | undefined;
   private solutionLevel = false;
 
@@ -437,7 +440,7 @@ class ModelBuilder {
       tab: c.tab,
       uri: c.uri,
       pathDescription: this.cfg.groupBy === 'folder' ? '' : pathDescription(c.uri, c.project, this.cfg, this.multiRoot),
-      // In the flattened multi-group list only editors outside the main group are annotated,
+      // In the flattened multi-group list only editors outside the anchor group are annotated,
       // so a lone split (e.g. Settings opened to the side) does not tag every file.
       groupLabel:
         this.mainColumn !== undefined && c.tab.group.viewColumn !== this.mainColumn
@@ -487,36 +490,28 @@ class ModelBuilder {
 }
 
 /** Label of a top-level editor-group node ("Group 2"), matching the built-in Open Editors view. */
-export function groupNodeLabel(viewColumn: vscode.ViewColumn): string {
+function groupNodeLabel(viewColumn: vscode.ViewColumn): string {
   return `Group ${viewColumn}`;
 }
 
 /** Wording used next to a single editor ("editor group 2"), unambiguous next to counts. */
-export function editorGroupText(viewColumn: vscode.ViewColumn): string {
-  return `editor group ${viewColumn}`;
+export function editorGroupText(viewColumn: vscode.ViewColumn, capitalized = false): string {
+  return `${capitalized ? 'Editor' : 'editor'} group ${viewColumn}`;
 }
 
 /**
- * The group holding the most listed editors (lowest column on a tie), or
+ * The anchor group of a flattened multi-group list: the lowest group that holds a
+ * file-backed editor (so a Settings or Welcome page alone in another group does not
+ * tag every file), falling back to the lowest group with any listed editor. Returns
  * `undefined` when all listed editors are in one group and no annotation is needed.
  */
 function mainViewColumn(contexts: readonly TabContext[]): vscode.ViewColumn | undefined {
-  const counts = new Map<vscode.ViewColumn, number>();
-  for (const c of contexts) {
-    counts.set(c.tab.group.viewColumn, (counts.get(c.tab.group.viewColumn) ?? 0) + 1);
-  }
-  if (counts.size < 2) {
+  const all = contexts.map((c) => c.tab.group.viewColumn);
+  if (new Set(all).size < 2) {
     return undefined;
   }
-  let best: vscode.ViewColumn | undefined;
-  let bestCount = -1;
-  for (const [column, count] of counts) {
-    if (count > bestCount || (count === bestCount && best !== undefined && column < best)) {
-      best = column;
-      bestCount = count;
-    }
-  }
-  return best;
+  const withFile = contexts.filter((c) => c.uri).map((c) => c.tab.group.viewColumn);
+  return Math.min(...(withFile.length > 0 ? withFile : all)) as vscode.ViewColumn;
 }
 
 function compareByName(a: TabNode, b: TabNode): number {
@@ -629,10 +624,6 @@ function relativePath(base: vscode.Uri, target: vscode.Uri): string | undefined 
     return targetPath.substring(prefix.length);
   }
   return undefined;
-}
-
-function displayPath(uri: vscode.Uri): string {
-  return uri.scheme === 'file' ? uri.fsPath : uri.path;
 }
 
 function compareProjects(a: ProjectNode, b: ProjectNode): number {
