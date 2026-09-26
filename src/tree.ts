@@ -22,7 +22,7 @@ export const VIEW_ID = 'openEditorGroups.view';
 const DIRTY_SUFFIX: Record<DirtyIndicator, string> = { dot: ' ●', asterisk: '*', none: '' };
 
 /**
- * Tree data provider for the "Open Editors by Project" view.
+ * Tree data provider for the "Open Editors" view (titled by grouping mode, e.g. "by Project").
  *
  * The whole model is rebuilt (debounced) whenever tabs change. Tree items carry
  * stable ids so VS Code keeps expansion state across rebuilds.

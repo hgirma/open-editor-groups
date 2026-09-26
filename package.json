@@ -2,7 +2,7 @@
   "name": "open-editor-groups",
   "displayName": "Open Editor Groups",
   "description": "Groups open editors by project (like the Visual Studio 2026 Tabs window) and colorizes them per project.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "hgirma",
   "license": "MIT",
   "engines": {
@@ -40,7 +40,7 @@
       "activitybar": [
         {
           "id": "openEditorGroups",
-          "title": "Open Editors by Project",
+          "title": "Open Editors",
           "icon": "resources/icons/activity.svg"
         }
       ]
@@ -49,8 +49,8 @@
       "openEditorGroups": [
         {
           "id": "openEditorGroups.view",
-          "name": "Open Editors by Project",
-          "contextualTitle": "Open Editors by Project",
+          "name": "Open Editors",
+          "contextualTitle": "Open Editors",
           "icon": "resources/icons/view.svg"
         }
       ]
@@ -65,7 +65,7 @@
       {
         "id": "openEditorGroups.gettingStarted",
         "title": "Open editors grouped by project",
-        "description": "Set up the Open Editors by Project view and tune VS Code so each open file is listed once, under its project.",
+        "description": "Set up the Open Editors view and tune VS Code so each open file is listed once, under its project.",
         "featuredFor": [
           "**/*.sln",
           "**/*.slnx",
@@ -75,10 +75,10 @@
           {
             "id": "openEditorGroups.step.showView",
             "title": "Open the view",
-            "description": "The extension adds an **Open Editors by Project** icon to the Activity Bar. Every open editor is listed under the project it belongs to (`.csproj`, `package.json`, `Cargo.toml`, ... see the setting `openEditorGroups.projectFilePatterns`), with a colored bar per project.\n[Show the view](command:openEditorGroups.view.focus)",
+            "description": "The extension adds an **Open Editors** icon to the Activity Bar. Every open editor is listed under the project it belongs to (`.csproj`, `package.json`, `Cargo.toml`, ... see the setting `openEditorGroups.projectFilePatterns`), with a colored bar per project. The view's title follows the grouping: by Project, by Folder or by Workspace Folder.\n[Show the view](command:openEditorGroups.view.focus)",
             "media": {
               "image": "images/open-editors-by-project.png",
-              "altText": "The Open Editors by Project view with files grouped under five projects, each with its own color"
+              "altText": "The Open Editors view with files grouped under five projects, each with its own color"
             },
             "completionEvents": [
               "onView:openEditorGroups.view"

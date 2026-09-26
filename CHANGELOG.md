@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2
+
+- The view's title follows the grouping mode: "Open Editors: by Project", "by Folder", "by Workspace Folder", or "Open Editors" for the flat list. The Activity Bar container is now titled "Open Editors".
+- README: disclaimer that the extension was built with Claude Code.
+
 ## 0.2.1
 
 - With `openEditorGroups.groupByEditorGroup` off, files no longer get a "Group 1" suffix (which looked like a count) as soon as a second editor group appears. Only editors outside the first group that holds a file are marked, with the text "editor group N".

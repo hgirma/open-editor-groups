@@ -6,7 +6,7 @@ Groups your open editors by project and colors them per project, the way the **T
 
 ## Where is it?
 
-The extension adds an **Open Editors by Project** icon to the Activity Bar (the column of icons on the left). Click it to see your open editors grouped by project. The built-in *Open Editors* section of the Explorer is not changed, because VS Code does not let extensions modify built-in views; the walkthrough below shows how to hide it.
+The extension adds an **Open Editors** icon to the Activity Bar (the column of icons on the left). Click it to see your open editors grouped by project; the view's header follows the grouping mode ("Open Editors: by Project", "by Folder", "by Workspace Folder", or just "Open Editors" for the flat list). The built-in *Open Editors* section of the Explorer is not changed, because VS Code does not let extensions modify built-in views; the walkthrough below shows how to hide it.
 
 After installation VS Code opens the extension's **Getting Started** walkthrough. You can reopen it any time with the command **Open Editor Groups: Getting Started** (also in the view's `...` menu). It walks through the steps in [Customize further](#customize-further) with one-click buttons.
 

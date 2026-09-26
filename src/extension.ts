@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { ColorAssigner } from './colors';
 import { registerCommands } from './commands';
-import { affectsConfig, getConfig } from './config';
+import { affectsConfig, getConfig, GroupBy } from './config';
 import { ProjectColorDecorations } from './decorations';
 import { OpenEditorGroupsDragAndDrop } from './dragAndDrop';
 import { Model, ModelServices, Node } from './model';
@@ -27,6 +27,11 @@ export function activate(context: vscode.ExtensionContext): void {
   });
 
   context.subscriptions.push(resolver, solutions, mru, provider, decorations, treeView, vscode.window.registerFileDecorationProvider(decorations));
+
+  const updateTitle = (): void => {
+    treeView.title = VIEW_TITLES[getConfig().groupBy];
+  };
+  updateTitle();
 
   const revealActive = (model: Model): void => {
     if (!getConfig().autoReveal || !treeView.visible || treeView.selection.length > 1) {
@@ -68,6 +73,9 @@ export function activate(context: vscode.ExtensionContext): void {
       if (affectsConfig(e, 'projectFilePatterns')) {
         resolver.reload();
       }
+      if (affectsConfig(e, 'groupBy')) {
+        updateTitle();
+      }
       if (affectsConfig(e, 'colorizeTabs') || affectsConfig(e, 'colorBy') || affectsConfig(e, 'colorRules')) {
         decorations.refreshAll();
       }
@@ -84,6 +92,18 @@ export function activate(context: vscode.ExtensionContext): void {
 export function deactivate(): void {
   // Everything is disposed through context.subscriptions.
 }
+
+/**
+ * View title per grouping mode. The container is titled "Open Editors"; VS Code renders a
+ * single view in a container as "Container: View" unless both titles are identical, so the
+ * header reads "Open Editors: by Project" and, for the flat list, just "Open Editors".
+ */
+const VIEW_TITLES: Record<GroupBy, string> = {
+  project: 'by Project',
+  folder: 'by Folder',
+  workspaceFolder: 'by Workspace Folder',
+  none: 'Open Editors',
+};
 
 function updateBadge(treeView: vscode.TreeView<unknown>, model: Model): void {
   const dirty = [...model.byTab.keys()].filter((tab) => tab.isDirty).length;
@@ -103,7 +123,7 @@ function showWelcomeOnce(context: vscode.ExtensionContext): void {
   const hideBuiltIn = 'Hide Built-in Open Editors';
   void vscode.window
     .showInformationMessage(
-      'Open Editor Groups lists your open editors grouped by project in the "Open Editors by Project" view in the Activity Bar.',
+      'Open Editor Groups lists your open editors grouped by project in the "Open Editors" view in the Activity Bar.',
       getStarted,
       showView,
       hideBuiltIn,
