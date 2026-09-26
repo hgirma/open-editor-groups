@@ -75,7 +75,7 @@
           {
             "id": "openEditorGroups.step.showView",
             "title": "Open the view",
-            "description": "The extension adds an **Open Editor Groups** icon to the Activity Bar. Every open editor is listed under the project it belongs to (`.csproj`, `package.json`, `Cargo.toml`, ... see the setting `openEditorGroups.projectFilePatterns`), with a colored bar per project. The view's title follows the grouping: By Project, By Folder or By Workspace Folder.\n[Show the view](command:openEditorGroups.view.focus)",
+            "description": "The extension adds an **Open Editor Groups** icon to the Activity Bar. Every open editor is listed under the project it belongs to (`.csproj`, `package.json`, `Cargo.toml`, ... see the setting `openEditorGroups.projectFilePatterns`), with a colored bar per project. The view's title follows the grouping: Project, Folder or Workspace Folder.\n[Show the view](command:openEditorGroups.view.focus)",
             "media": {
               "image": "images/open-editors-by-project.png",
               "altText": "The Open Editor Groups view with files grouped under five projects, each with its own color"

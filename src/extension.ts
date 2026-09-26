@@ -96,12 +96,12 @@ export function deactivate(): void {
 /**
  * View title per grouping mode. The container is titled "Open Editor Groups"; VS Code renders
  * a single view in a container as "Container: View" unless both titles are identical, so the
- * header reads "Open Editor Groups: By Project" and, for the flat list, just "Open Editor Groups".
+ * header reads "Open Editor Groups: Project" and, for the flat list, just "Open Editor Groups".
  */
 const VIEW_TITLES: Record<GroupBy, string> = {
-  project: 'By Project',
-  folder: 'By Folder',
-  workspaceFolder: 'By Workspace Folder',
+  project: 'Project',
+  folder: 'Folder',
+  workspaceFolder: 'Workspace Folder',
   none: 'Open Editor Groups',
 };
 
