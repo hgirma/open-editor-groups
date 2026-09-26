@@ -19,7 +19,7 @@ After installation VS Code opens the extension's **Getting Started** walkthrough
 - **Follows the active editor.** The active editor is selected and shown in bold; unsaved editors get a dot; the view's badge counts unsaved editors.
 - **Editor actions.** Click to open, hover for *Pin*/*Close*. The context menu has *Open to the Side*, *Reveal in Explorer View*, *Copy Path*, *Close Others in Project*, *Close Saved in Project*, *Close All in Project* and more. The title bar has *Save All*, *Close All Editors*, *Expand All* and *Collapse All*.
 - **Multi-select and drag.** <kbd>Ctrl</kbd>+click or <kbd>Shift</kbd>+click several files (or a whole project); *Close*, *Pin*, *Open to the Side* and *Copy Path* then act on all of them. Drag a file, or a project, from the view into the editor area to open it there or in a new split.
-- **Split editors.** With several editor groups the view adds a top-level node per group (like the built-in Open Editors view). Turn this off with `openEditorGroups.groupByEditorGroup` to see one flat list.
+- **Split editors.** With several editor groups the view adds a top-level node per group (like the built-in Open Editors view). Turn this off with `openEditorGroups.groupByEditorGroup` to see one list, where only editors outside the main group carry an "editor group N" note.
 - **Colorize the real tabs (opt-in).** `openEditorGroups.colorizeTabs` tints the editor tab titles (and the file labels in other views) with the project color through file decorations.
 
 ## Customize further
@@ -92,7 +92,7 @@ The second binding closes whatever is selected in the view.
 | `openEditorGroups.projectFilePatterns` | `.csproj`, `.fsproj`, `.vbproj`, `.vcxproj`, `.esproj`, `.sqlproj`, `.wapproj`, `.shproj`, `.pyproj`, `.njsproj`, `package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `pom.xml`, `build.gradle(.kts)` | File name patterns that mark a project root. Earlier patterns win inside one folder. |
 | `openEditorGroups.groupBy` | `project` | `project`, `folder`, `workspaceFolder` or `none`. Colors always come from the file's project (or color rules). |
 | `openEditorGroups.solutionNodes` | `auto` | Add a node per `.sln`/`.slnx`: `auto` (two or more solutions), `always`, `never`. Projects in no solution go under *Other projects*. |
-| `openEditorGroups.groupByEditorGroup` | `true` | Add a node per editor group when the editor area is split. |
+| `openEditorGroups.groupByEditorGroup` | `true` | Add a node per editor group when the editor area is split. When off, editors outside the main group are marked "editor group N". |
 | `openEditorGroups.hideSingleGroup` | `false` | List the editors without a header when everything belongs to one project. |
 | `openEditorGroups.showNonFileEditors` | `true` | List editors without a file (Settings, Welcome, ...) under *Other*. |
 | `openEditorGroups.sortOrder` | `alphabetical` | `alphabetical`, `editorOrder`, `mostRecentlyUsed` or `fileType`. |

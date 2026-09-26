@@ -1,7 +1,20 @@
 import * as vscode from 'vscode';
 import { BAR_ICON_ID, colorIdForSlot } from './colors';
 import { DirtyIndicator, ExtensionConfig, getConfig } from './config';
-import { buildModel, descendantTabs, emptyModel, GroupNode, Model, ModelServices, Node, PinnedNode, ProjectNode, SolutionNode, TabNode } from './model';
+import {
+  buildModel,
+  descendantTabs,
+  editorGroupText,
+  emptyModel,
+  GroupNode,
+  Model,
+  ModelServices,
+  Node,
+  PinnedNode,
+  ProjectNode,
+  SolutionNode,
+  TabNode,
+} from './model';
 
 export const VIEW_ID = 'openEditorGroups.view';
 
@@ -188,7 +201,8 @@ export class OpenEditorGroupsProvider implements vscode.TreeDataProvider<Node>, 
     if (node.projectLabel) {
       lines.push(`Project: ${node.projectLabel}`);
     }
-    lines.push(`Editor group ${tab.group.viewColumn}${state.length ? ` · ${state.join(' · ')}` : ''}`);
+    const groupText = editorGroupText(tab.group.viewColumn);
+    lines.push(`${groupText.charAt(0).toUpperCase()}${groupText.slice(1)}${state.length ? ` · ${state.join(' · ')}` : ''}`);
     item.tooltip = lines.join('\n');
 
     const colorable = cfg.colorBy === 'project' && !!node.colorKey;

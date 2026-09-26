@@ -2,7 +2,7 @@
   "name": "open-editor-groups",
   "displayName": "Open Editor Groups",
   "description": "Groups open editors by project (like the Visual Studio 2026 Tabs window) and colorizes them per project.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "hgirma",
   "license": "MIT",
   "engines": {
@@ -321,7 +321,7 @@
           "type": "boolean",
           "order": 4,
           "default": true,
-          "description": "When the editor area is split into several editor groups, add a top-level node per editor group (Group 1, Group 2, ...). With a single editor group this has no effect."
+          "description": "When the editor area is split into several editor groups, add a top-level node per editor group (Group 1, Group 2, ...). When off, all editors form one list and only those outside the group that holds most of the listed editors are marked with 'editor group N'. With a single editor group this has no effect."
         },
         "openEditorGroups.hideSingleGroup": {
           "type": "boolean",

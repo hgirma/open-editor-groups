@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- With `openEditorGroups.groupByEditorGroup` off, files no longer get a "Group 1" suffix (which looked like a count) as soon as a second editor group appears. Only editors outside the group that holds most of the listed editors are marked, with the text "editor group N".
+
 ## 0.2.0
 
 - Grouping modes: by project (default), by folder, by workspace folder, or a flat list (`openEditorGroups.groupBy`); optional solution nodes from `.sln`/`.slnx` files (`openEditorGroups.solutionNodes`); `hideSingleGroup`.

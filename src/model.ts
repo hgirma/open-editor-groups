@@ -74,7 +74,7 @@ export interface TabNode {
   readonly uri: vscode.Uri | undefined;
   /** Folder path shown next to the name (already formatted for the configured path style). */
   readonly pathDescription: string;
-  /** "Group N" when several editor groups are flattened into one list. */
+  /** "editor group N" for editors outside the first group when several groups are flattened into one list. */
   readonly groupLabel: string | undefined;
   parent: ContainerNode | undefined;
   /** Position of the tab in the editor area, used for the "editor order" sort. */
@@ -195,7 +195,8 @@ class ModelBuilder {
   private readonly rules: CompiledColorRule[];
   private readonly multiRoot: boolean;
   private tabCount = 0;
-  private flattenedGroups = false;
+  /** In the flattened multi-group list: the group most listed editors belong to. Undefined when no group annotation is needed. */
+  private mainColumn: vscode.ViewColumn | undefined;
   private solutionLevel = false;
 
   constructor(
@@ -210,7 +211,6 @@ class ModelBuilder {
     const { cfg, services } = this;
     const groups = vscode.window.tabGroups.all;
     const splitByGroup = cfg.groupByEditorGroup && groups.length > 1;
-    this.flattenedGroups = !splitByGroup && groups.length > 1;
 
     const bucketsAreProjects = cfg.groupBy === 'project' || cfg.groupBy === 'folder';
     if (bucketsAreProjects && cfg.solutionNodes !== 'never') {
@@ -225,7 +225,7 @@ class ModelBuilder {
         const groupNode: GroupNode = {
           kind: 'group',
           id: `group:${group.viewColumn}`,
-          label: `Group ${group.viewColumn}`,
+          label: groupNodeLabel(group.viewColumn),
           group,
           parent: undefined,
           children: [],
@@ -241,7 +241,9 @@ class ModelBuilder {
           refs.push({ tab, index: refs.length });
         }
       }
-      roots = this.buildScope(await this.classifyAll(refs), undefined);
+      const contexts = await this.classifyAll(refs);
+      this.mainColumn = mainViewColumn(contexts);
+      roots = this.buildScope(contexts, undefined);
     }
 
     if (cfg.hideSingleGroup && roots.length === 1 && roots[0].kind === 'project') {
@@ -435,7 +437,12 @@ class ModelBuilder {
       tab: c.tab,
       uri: c.uri,
       pathDescription: this.cfg.groupBy === 'folder' ? '' : pathDescription(c.uri, c.project, this.cfg, this.multiRoot),
-      groupLabel: this.flattenedGroups ? `Group ${c.tab.group.viewColumn}` : undefined,
+      // In the flattened multi-group list only editors outside the main group are annotated,
+      // so a lone split (e.g. Settings opened to the side) does not tag every file.
+      groupLabel:
+        this.mainColumn !== undefined && c.tab.group.viewColumn !== this.mainColumn
+          ? editorGroupText(c.tab.group.viewColumn)
+          : undefined,
       parent,
       tabIndex: c.index,
       project: c.project,
@@ -477,6 +484,39 @@ class ModelBuilder {
         return compareByName(a, b);
     }
   };
+}
+
+/** Label of a top-level editor-group node ("Group 2"), matching the built-in Open Editors view. */
+export function groupNodeLabel(viewColumn: vscode.ViewColumn): string {
+  return `Group ${viewColumn}`;
+}
+
+/** Wording used next to a single editor ("editor group 2"), unambiguous next to counts. */
+export function editorGroupText(viewColumn: vscode.ViewColumn): string {
+  return `editor group ${viewColumn}`;
+}
+
+/**
+ * The group holding the most listed editors (lowest column on a tie), or
+ * `undefined` when all listed editors are in one group and no annotation is needed.
+ */
+function mainViewColumn(contexts: readonly TabContext[]): vscode.ViewColumn | undefined {
+  const counts = new Map<vscode.ViewColumn, number>();
+  for (const c of contexts) {
+    counts.set(c.tab.group.viewColumn, (counts.get(c.tab.group.viewColumn) ?? 0) + 1);
+  }
+  if (counts.size < 2) {
+    return undefined;
+  }
+  let best: vscode.ViewColumn | undefined;
+  let bestCount = -1;
+  for (const [column, count] of counts) {
+    if (count > bestCount || (count === bestCount && best !== undefined && column < best)) {
+      best = column;
+      bestCount = count;
+    }
+  }
+  return best;
 }
 
 function compareByName(a: TabNode, b: TabNode): number {
